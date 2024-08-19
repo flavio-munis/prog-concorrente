@@ -1,0 +1,8 @@
+# Source Files
+sources/*
+
+# Emacs Auto Save Files
+*~
+
+# Core Dump Files
+core.*
