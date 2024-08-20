@@ -13,9 +13,9 @@ C_FINAL = $(basename ${C_SOURCE})
 all: ${C_FINAL}
 	@ echo 'Finished Building All Files!'
 
-${C_FINAL}:
-	@ echo 'Compiling $(addsuffix .c, $@) as $@...'
-	@ $(CC) $(addsuffix .c, $@) $(CC_FLAGS) $@
+% : %.c
+	@ echo 'Compiling $< as $@...'
+	@ $(CC) $< $(CC_FLAGS) $@
 
 
 # Clean All Compiled Files, Auto Save and Core Files
