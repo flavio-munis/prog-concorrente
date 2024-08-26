@@ -11,11 +11,11 @@ C_FINAL = $(basename ${C_SOURCE})
 
 # Compile All .c files in the folder as their basename
 all: ${C_FINAL}
-	@ echo 'Finished Building All Files!'
 
 % : %.c
 	@ echo 'Compiling $< as $@...'
 	@ $(CC) $< $(CC_FLAGS) $@
+	@ echo 'Finished Building $@'
 
 
 # Clean All Compiled Files, Auto Save and Core Files
