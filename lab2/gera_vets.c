@@ -78,7 +78,7 @@ void writeToFile(void*, size_t, size_t, FILE*);
    @return bool If Args  Are Valid.
 */
 /*-----------------------------------------------------------------*/
-bool checkArgs(int, char*, unsigned int*);
+bool checkArgs(int, char*[], unsigned int*);
 
 
 /*-----------------------------------------------------------------
@@ -188,7 +188,7 @@ int main(int argc, char* argv[]) {
 	    perror("Error Opening in File!");
 
 	// Escreve o Tamanho dos Vetores
-    writeToFile(&arrSize, sizeof(long int), 1, output);
+    writeToFile(&arrSize, sizeof(unsigned int), 1, output);
 
 	// Escreve os Elementos dos Vetores
 	writeToFile(vec1, sizeof(float) ,arrSize, output);
