@@ -9,7 +9,7 @@ RESULT_FILE="results.txt"
 # Check if result file exists
 if [[ -e $RESULT_FILE ]]; 
 then
-   > results.txt
+	> results.txt
 else
 	touch results.txt
 fi
