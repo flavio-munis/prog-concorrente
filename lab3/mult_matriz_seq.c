@@ -1,10 +1,10 @@
 /*-----------------------------------------------------------------*/
 /**
 
-  @file    gera_matrizes.c
+  @file    mult_matriz_seq.c
   @author  Flávio M.
-  @brief   Gera duas matrizes com valores aleatorios e escreve em um
-           arquivo binário.
+  @brief   Multiplica Duas Matrizes (M X N) e (N X M) e escreve a
+           matriz resultado num arquivo binário.
   @Materia Prog Concorrente (ICP361)
 
  */
@@ -56,6 +56,18 @@ void getInputData(char*,
 
 /*-----------------------------------------------------------------*/
 /**
+   @brief Write Data to Binary File 
+   @param char*        Output File Path.
+   @param unsigned int Columns/Rows as The Result Matrix Will Always
+                       Be Squared.
+   @param float**      Result Matrix.
+*/
+/*-----------------------------------------------------------------*/
+void writeOutput(char*, unsigned int, float**);
+
+
+/*-----------------------------------------------------------------*/
+/**
    @brief Write a Information To a File.
    @param void*  Info To Be Written.
    @param size_t Data Type Size.
@@ -81,12 +93,28 @@ void readFromFile(void*, size_t, size_t, FILE*);
 /*-----------------------------------------------------------------*/
 /**
    @brief Check if a String of Arguments is Valid.
-   @param  int             Total Arguments in String (argc).
-   @param  char*           String of Arguments (argv).
-   @param  unsigned short* Pointer For Data Be Written.
+   @param int             Total Arguments in String (argc).
+   @param char*           String of Arguments (argv).
+   @param unsigned short* Pointer For Data Be Written.
 */
 /*-----------------------------------------------------------------*/
 void checkArgs(int, char*[], unsigned short*);
+
+
+/*-----------------------------------------------------------------*/
+/**
+   @brief Multiply Two Matrices (M x N) and (N x M)
+   @param  float**      Matrix (M x N).
+   @param  float**      Matrix (N x M).
+   @param  unsigned int M.
+   @param  unsigned int N.
+   @return float**      Result Matrix (M x M).
+*/
+/*-----------------------------------------------------------------*/
+float** multMatrix(float**,
+				   float**,
+				   unsigned int,
+				   unsigned int)
 
 
 /*-----------------------------------------------------------------
