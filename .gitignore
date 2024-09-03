@@ -6,3 +6,6 @@ sources/*
 
 # Core Dump Files
 core.*
+
+# Text Files
+*.txt

@@ -8,15 +8,17 @@ CC_FLAGS = -Wall \
 	-o
 
 # Folders
-C_SOURCE = $(wildcard *.c)
-C_FINAL = $(basename ${C_SOURCE})
+SRC = ./src
 INCLUDE = ./include
+C_SOURCE = $(wildcard ${SRC}/*.c)
+C_FILES = $(subst ${SRC}/,,${C_SOURCE})
+C_FINAL = $(basename $(C_FILES))
 
 
 # Compile All .c files in the folder as their basename
 all: ${C_FINAL}
 
-% : %.c
+% : ${SRC}/%.c
 	@ echo 'Compiling $< as $@...'
 	@ $(CC) $< $(CC_FLAGS) $@
 	@ echo '$@ Compiled!'
