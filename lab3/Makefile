@@ -5,6 +5,7 @@ CC_FLAGS = -Wall \
 	-I ${INCLUDE} \
 	-g \
 	-pthread \
+	-O2 \
 	-o
 
 # Folders

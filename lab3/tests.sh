@@ -35,9 +35,9 @@ write_median_value_seq() {
 
 	# Check if test is sequential or concurrent
 	if [ "$4" == seq ]; then
-		echo "Initializeng Sequential Test.."
+		echo "Initializing Sequential Test.."
 	else
-		echo "Initializeng Concurrent Test ($5 Threads).."
+		echo "Initializing Concurrent Test ($5 Threads).."
 	fi
 	
 	# Multiply Matrice N Times and Sum All Results
@@ -49,7 +49,7 @@ write_median_value_seq() {
 		if [ "$4" == seq ]; then
 		   output=$(./mult_matriz_seq $TEST_MATRICES $OUTPUT_FILE_SEQ)
 		else
-		   output=$(./mult_matriz_conc $TEST_MATRICES $OUTPUT_FILE_SEQ $5)
+		   output=$(./mult_matriz_conc $TEST_MATRICES $OUTPUT_FILE_CONC $5)
 		fi
 		   
 		curr_read_io=`echo "$output" | grep -oP "$read_io_regex"`
@@ -73,9 +73,9 @@ write_median_value_seq() {
 
 	# Check if test is sequential or concurrent
 	if [ "$4" == seq ]; then
-		echo "$2 x $3 - $1 Median Values ($4)" >> results.txt 
+		echo "$2x$3 - $1 Median Values ($4)" >> results.txt 
 	else
-		echo "$2 x $3 - $1 Median Values ($4 - $5 Threads)" >> results.txt 
+		echo "$2x$3 - $1 Median Values ($4 - $5 Threads)" >> results.txt 
 	fi
 
 	echo "Read: $read_io" >> results.txt
@@ -90,9 +90,9 @@ write_median_value_seq() {
 
 check_solutions() {
 	if [[ $(diff out_seq out_conc) ]]; then
-		echo "Sequential and Concurrent Solutions Are Equal!"
-	else
 		echo "Error! Solutions are NOT Equal!"
+	else
+		echo "Sequential and Concurrent Solutions Are Equal!"
 	fi
 }
 
