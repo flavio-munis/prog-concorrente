@@ -22,10 +22,10 @@ void checkArgs(int argc,
 	long long digit;
 
 	if (argc != 2) {
-		invalidProgramCall(argv[0], "[inicio] [fim] [threads]");
+		invalidProgramCall(argv[0], "[inicio]");
 	}
 
-    digit = atoll(argv[1]);
+    digit = strtoll(argv[1], NULL, 10);
 
 	if (digit < 0) {
 		invalidArgumentError("Argumento Inválido!\nInicio >= 0");

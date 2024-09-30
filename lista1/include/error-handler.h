@@ -84,7 +84,7 @@
 
 
 #define invalidProgramCall(progName, args) \
-	fprintf(stderr, "Usage: \n ./%s %s\n", progName, args); \
+	fprintf(stderr, "Usage: \n %s %s\n", progName, args); \
     exit(EXIT_FAILURE);
 
 
