@@ -58,9 +58,7 @@ long double series(int j, long long n) {
 	long double sum = 0, temp, r;
 #ifdef DEBUG
 	MyTimer* left, *right;
-#endif
 
-#ifdef DEBUG
 	INIT_TIMER(left);
 #endif
 
@@ -73,9 +71,7 @@ long double series(int j, long long n) {
 
 #ifdef DEBUG
     END_TIMER(left);
-#endif
 
-#ifdef DEBUG
 	INIT_TIMER(right);
 #endif
 
@@ -105,11 +101,9 @@ long double series(int j, long long n) {
 long double bbpAlgo(long long d) {
 	
 	long double s1, s2, s3, s4, result;
-	#ifdef DEBUG
-	MyTimer* ts1, *ts2, *ts3, *ts4, *tresult;
-	#endif
-
 #ifdef DEBUG
+	MyTimer* ts1, *ts2, *ts3, *ts4, *tresult;
+
 	puts("Timing Series 1...");
 	INIT_TIMER(ts1);
 #endif
@@ -197,6 +191,7 @@ int main(int argc, char* argv[]) {
 #endif
 
 	checkArgs(argc, argv, &d);
+
 #ifdef DEBUG
 	puts("Timing Total Algo Runtime...\n");
 	INIT_TIMER(tbbp);
