@@ -6,7 +6,7 @@
 #include "error-handler.h"
 
 
-//#define DEBUG
+#define DEBUG
 #define PRECISION 10
 #define EPSILON 1e-17
 
@@ -57,7 +57,7 @@ long double series(int j, long long n) {
 
 	long double sum = 0, temp, r;
 #ifdef DEBUG
-	MyTimer* left, *right;
+	MyTimer* left = NULL, *right = NULL;
 
 	INIT_TIMER(left);
 #endif
@@ -102,7 +102,7 @@ long double bbpAlgo(long long d) {
 	
 	long double s1, s2, s3, s4, result;
 #ifdef DEBUG
-	MyTimer* ts1, *ts2, *ts3, *ts4, *tresult;
+	MyTimer* ts1 = NULL, *ts2 = NULL, *ts3 = NULL, *ts4 = NULL, *tresult = NULL;
 
 	puts("Timing Series 1...");
 	INIT_TIMER(ts1);
@@ -187,7 +187,7 @@ int main(int argc, char* argv[]) {
 	long long d;
 	long double result;
 #ifdef DEBUG
-	MyTimer* tbbp;
+	MyTimer* tbbp = NULL;
 #endif
 
 	checkArgs(argc, argv, &d);
