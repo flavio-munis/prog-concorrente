@@ -39,10 +39,11 @@ typedef struct mytimer {
    @param MyTimer* Pointer to MyTimer Struct.
  */
 /*-----------------------------------------------------------------*/
-#define MALLOC_TIMER(timer)						\
+#define MALLOC_TIMER(timer)	{   \
 	timer = (MyTimer*) malloc(sizeof(MyTimer)); \
-	checkNullPointer((void*) timer);
-
+	checkNullPointer((void*) timer);   \
+	timer -> totalTime = 0.0; \
+}
 
 /*-----------------------------------------------------------------*/
 /**
@@ -51,7 +52,8 @@ typedef struct mytimer {
  */
 /*-----------------------------------------------------------------*/
 #define INIT_TIMER(timer) {  \
-		MALLOC_TIMER(timer); \
+		if (!timer)			 \
+			MALLOC_TIMER(timer);								\
 	    clock_gettime(CLOCK_MONOTONIC_RAW, &(timer -> start));	\
 }
 
@@ -63,7 +65,7 @@ typedef struct mytimer {
  */
 /*-----------------------------------------------------------------*/
 #define CALC_FINAL_TIME(timer) \
-	timer -> totalTime = ((timer -> end).tv_nsec - (timer -> start).tv_nsec) / 1000000000.0 + ((timer -> end).tv_sec - (timer -> start).tv_sec);
+	timer -> totalTime += ((timer -> end).tv_nsec - (timer -> start).tv_nsec) / 1000000000.0 + ((timer -> end).tv_sec - (timer -> start).tv_sec);
 
 
 /*-----------------------------------------------------------------*/
