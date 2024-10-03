@@ -32,7 +32,7 @@
                               Structs
   -----------------------------------------------------------------*/
 typedef struct node {
-	long double (*func)(int, long long, long double);
+	long double (*func)(int, long long);
     int arg1;
 	long long arg2;
 	struct node* next;
@@ -119,7 +119,7 @@ Queue* initQueue();
    @return Node* Pointer to New Node.
 */
 /*-----------------------------------------------------------------*/
-Node* initNode(long double (*func)(int, long long, long double), 
+Node* initNode(long double (*func)(int, long long), 
 			   int, 
 			   long long);
 
@@ -187,7 +187,7 @@ Queue* initQueue() {
 	return newQ;
 }
 
-Node* initNode(long double (*func)(int, long long, long double), 
+Node* initNode(long double (*func)(int, long long), 
 			   int arg1, 
 			   long long arg2) {
 	
@@ -289,48 +289,34 @@ void checkArgs(int argc,
 void executeWork(Node* n) {
     
 	long double sum, result;
+	result = n -> func(n -> arg1, n -> arg2);
+	if (result > EPSILON) {
 
-	switch (n -> arg1) {
-		case 1:
-			pthread_mutex_lock(&s1Mutex);
-			sum = s1;
-			result = n -> func(n -> arg1, n -> arg2, sum);
-			
-			if (result > EPSILON)
-				s1 = result;
-
-			pthread_mutex_unlock(&s1Mutex);
-			break;
-		case 4:
-		    pthread_mutex_lock(&s2Mutex);
-			sum = s2;
-			result = n -> func(n -> arg1, n -> arg2, sum);
-			
-			if (result > EPSILON)
-				s2 = result;
-
-			pthread_mutex_unlock(&s2Mutex);
-			break;
-	    case 5:
-			pthread_mutex_lock(&s3Mutex);
-			sum = s3;
-			result = n -> func(n -> arg1, n -> arg2, sum);
-		    
-			if (result > EPSILON)
-				s3 = result;
-
-			pthread_mutex_unlock(&s3Mutex);
-			break;
-	    default:
-		    pthread_mutex_lock(&s4Mutex);
-			sum = s4;
-			result = n -> func(n -> arg1, n -> arg2, sum);
-		    
-			if (result > EPSILON)
-				s4 = result;
-			
-			pthread_mutex_unlock(&s4Mutex);
-			break;
+		switch (n -> arg1) {
+		    case 1:
+				pthread_mutex_lock(&s1Mutex);
+				s1 += result;
+				s1 = fmodl(s1, 1.0L);
+				pthread_mutex_unlock(&s1Mutex);
+				break;
+		    case 4:
+				pthread_mutex_lock(&s2Mutex);
+				s2 += result;
+				s2 = fmodl(s2, 1.0L);
+				pthread_mutex_unlock(&s2Mutex);
+				break;
+	        case 5:
+				pthread_mutex_lock(&s3Mutex);
+				s3 += result;
+				s3 = fmodl(s3, 1.0L);
+				pthread_mutex_unlock(&s3Mutex);
+				break;
+	        default:
+				pthread_mutex_lock(&s4Mutex);
+				s4 += result;
+				s4 = fmodl(s4, 1.0L);
+				pthread_mutex_unlock(&s4Mutex);
+		}
 	}
 
 	freeNode(n);
@@ -461,30 +447,26 @@ long long modPow(long long n, long long exp, long long base) {
 	return result;
 }
 
-long double lhs(int j, long long k, long double sum) {
+long double lhs(int j, long long k) {
 
-	long double r;
+	long double r, temp;
 
 	r = 8.0L*k +j;
-	sum = sum + modPow(16, d - k, r) / r;
-	sum = fmodl(sum, 1.0L);
+    temp = modPow(16, d - k, r) / r;
+    temp = fmodl(temp, 1.0L);
 
-	//printf("(j=%d)Lhs = %Lf\n", j, sum);
-
-	return sum;
+	return temp;
 }
 
-long double rhs(int j, long long k, long double sum) {
+long double rhs(int j, long long k) {
 	
-	long double r;
+	long double temp, r;
 
 	r = 8.0L*k +j;
-	sum = sum + powl(16.0L, (long double) d - k) / r;
-	sum = fmodl(sum, 1.0L);
-
-	//printf("(j=%d)Rhs = %Lf\n", j, sum);
+    temp = powl(16.0L, (long double) d - k) / r;
+    temp = fmodl(temp, 1.0L);
 	
-	return sum;
+	return temp;
 }
 
 long double bbpAlgo() { 
@@ -564,7 +546,7 @@ int main(int argc, char* argv[]) {
 	ihex(result);
 	puts("");
 
-	free(work);
+	//free(work);
 
     return 0;
 }
