@@ -26,13 +26,13 @@
                             Definitions  -----------------------------------------------------------------*/
 #define PRECISION 10
 #define EPSILON 1e-17
-#define DEBUG
+#define BATCH_SIZE 100000
+//#define DEBUG
 
 /*-----------------------------------------------------------------
                               Structs
   -----------------------------------------------------------------*/
 typedef struct node {
-	long double (*func)(int, long long);
     int arg1;
 	long long arg2;
 	struct node* next;
@@ -57,7 +57,7 @@ Queue* work;
 
 long double s1 = 0.0L, s2 = 0.0L, s3 = 0.0L, s4 = 0.0L;
 
-MyTimer* enq = NULL, *deq = NULL, *s1t = NULL, *s2t = NULL, *s3t = NULL, *s4t = NULL, *total = NULL, *lhsM = NULL, *rhsM = NULL; 
+MyTimer* enq = NULL, *s1t = NULL, *s2t = NULL, *s3t = NULL, *s4t = NULL, *total = NULL, *lhsM = NULL, *rhsM = NULL; 
 
 /*-----------------------------------------------------------------
                    Internal Functions Signatures
@@ -120,9 +120,7 @@ Queue* initQueue();
    @return Node* Pointer to New Node.
 */
 /*-----------------------------------------------------------------*/
-Node* initNode(long double (*func)(int, long long), 
-			   int, 
-			   long long);
+Node* initNode(int, long long);
 
 /*-----------------------------------------------------------------*/
 /**
@@ -173,6 +171,10 @@ void executeWork(Node*);
 
 void stopThreads();
 
+
+long double lhs(int, long long);
+
+
 /*-----------------------------------------------------------------
                       Functions Implementation
   -----------------------------------------------------------------*/
@@ -188,14 +190,11 @@ Queue* initQueue() {
 	return newQ;
 }
 
-Node* initNode(long double (*func)(int, long long), 
-			   int arg1, 
-			   long long arg2) {
+Node* initNode(int arg1, long long arg2) {
 	
 	Node* newNode = malloc(sizeof(Node));
 	checkNullPointer((void*) newNode);
     
-	newNode -> func = func;
 	newNode -> arg1 = arg1;
 	newNode -> arg2 = arg2;
 	newNode -> next = NULL;
@@ -298,7 +297,9 @@ void checkArgs(int argc,
 void executeWork(Node* n) {
     
 	long double sum, result;
-	result = n -> func(n -> arg1, n -> arg2);
+	
+	result = lhs(n -> arg1, n -> arg2);
+
 	if (result > EPSILON) {
 
 		switch (n -> arg1) {
@@ -484,26 +485,39 @@ long long modPow(long long n, long long exp, long long base) {
 	return result;
 }
 
-long double lhs(int j, long long k) {
+long double lhs(int j, long long s) {
 
-	long double r, temp;
+	long double r, temp = 0.0L;
+	long long loopLimit = s + BATCH_SIZE;
 
-	r = 8.0L*k +j;
-    temp = modPow(16, d - k, r) / r;
-    temp = fmodl(temp, 1.0L);
+	if (loopLimit > d)
+		loopLimit = BATCH_SIZE;
+
+	for (long long k = s; k < loopLimit; k++) {
+		r = 8.0L*k +j;
+		temp += modPow(16, d - k, r) / r;
+		temp = fmodl(temp, 1.0L);
+	}
 
 	return temp;
 }
 
-long double rhs(int j, long long k) {
+long double rhs(long double sum, int j) {
 	
 	long double temp, r;
 
-	r = 8.0L*k +j;
-    temp = powl(16.0L, (long double) d - k) / r;
-    temp = fmodl(temp, 1.0L);
+	for (long long k = d; k <= d + 100; k++) {
+		r = 8.0L*k + j;
+		temp = powl(16.0L, (long double) d - k) / r;
+		
+		if (temp < EPSILON)
+			break;
+
+		sum += temp;
+	    sum = fmodl(sum, 1.0L);
+	}
 	
-	return temp;
+	return sum;
 }
 
 long double bbpAlgo() { 
@@ -516,51 +530,42 @@ long double bbpAlgo() {
 	INIT_TIMER(lhsM);
 #endif
 
-	for (long long k = 0; k < d; k++) {
+	for (long long k = 0; k < d; k += BATCH_SIZE) {
 		Node* s1, *s2, *s3, *s4;
 
-		s1 = initNode(lhs, 1, k);	
+		s1 = initNode(1, k);	
 		enqueue(s1);
 
-		s2 = initNode(lhs, 4, k);
+		s2 = initNode(4, k);
 		enqueue(s2);
 		
-		s3 = initNode(lhs, 5, k);
+		s3 = initNode(5, k);
 		enqueue(s3);
 
-		s4 = initNode(lhs, 6, k);
+		s4 = initNode(6, k);
 		enqueue(s4);
 	} 
 
 #ifdef DEBUG
 	END_TIMER(lhsM);
 	CALC_FINAL_TIME(lhsM);
-
-	INIT_TIMER(rhsM);
 #endif
 
-	for (long long k = d; k <= d + 100; k++) {
-		Node* s1, *s2, *s3, *s4;
+    stopThreads();
 
-		s1 = initNode(rhs, 1, k);
-		enqueue(s1);
-		
-		s2 = initNode(rhs, 4, k);
-		enqueue(s2);
+#ifdef DEBUG
+    INIT_TIMER(rhsM);
+#endif
 
-		s3 = initNode(rhs, 5, k);
-		enqueue(s3);
-		
-		s4 = initNode(rhs, 6, k);
-		enqueue(s4);
-	}
+	s1 = rhs(s1, 1);
+	s2 = rhs(s2, 4);
+	s3 = rhs(s3, 5);
+	s4 = rhs(s4, 6);
 
 #ifdef DEBUG
 	END_TIMER(rhsM);
 	CALC_FINAL_TIME(rhsM);
 #endif
-
-	stopThreads();
 
 	//printf("s1: %Lf\ns2: %Lf\ns3: %Lf\ns4: %Lf\n", s1, s2, s3, s4);
 
@@ -586,21 +591,24 @@ void ihex (long double x) {
 
 void printTimers() {
 
-	printf("s1 Timer: %.5fs\n", s1t -> totalTime);
-	printf("s2 Timer: %.5fs\n", s2t -> totalTime);
-	printf("s3 Timer: %.5fs\n", s3t -> totalTime);
-	printf("s4 Timer: %.5fs\n", s4t -> totalTime);
+	if (d){
+		printf("s1 Timer: %.5fs\n", s1t -> totalTime);
+		printf("s2 Timer: %.5fs\n", s2t -> totalTime);
+		printf("s3 Timer: %.5fs\n", s3t -> totalTime);
+		printf("s4 Timer: %.5fs\n", s4t -> totalTime);
+		printf("Enqueue Time: %.5fs\n", enq -> totalTime);
+	
+		free(s1t);
+		free(s2t);
+		free(s3t);
+		free(s4t);
+		free(enq);
+	}
 	printf("Lhs Malloc Time: %.5fs\n", lhsM -> totalTime);
 	printf("Rhs Malloc Time: %.5fs\n", rhsM -> totalTime);
-	printf("Enqueue Time: %.5fs\n", enq -> totalTime);
 	printf("Total Exec. Time: %.5fs\n", total -> totalTime);
 
-	free(enq);
 	free(total);
-	free(s1t);
-    free(s2t);
-	free(s3t);
-	free(s4t);
 	free(lhsM);
 	free(rhsM);
 }
@@ -614,7 +622,6 @@ int main(int argc, char* argv[]) {
 	INIT_TIMER(total);
 #endif
 	work = initQueue();
-	//results = initQueue();
 
 	checkArgs(argc, argv);
 
