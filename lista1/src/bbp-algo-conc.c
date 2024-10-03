@@ -26,7 +26,9 @@
                             Definitions  -----------------------------------------------------------------*/
 #define PRECISION 10
 #define EPSILON 1e-17
-
+#define THREAD_LIMIT 65536
+#define QUEUE_LIMIT 100000
+#define DEBUG
 
 /*-----------------------------------------------------------------
                               Structs
@@ -35,27 +37,22 @@ typedef struct node {
 	long double (*func)(int, long long);
     int arg1;
 	long long arg2;
-	struct node* next;
 } Node;
-
-typedef struct queue {
-	Node* front;
-	Node* rear;
-	unsigned int totalNodes;
-} Queue;
 
 
 /*-----------------------------------------------------------------
                           Global Variables -----------------------------------------------------------------*/
-pthread_mutex_t qsMutex, stopMutex, activeMutex;
+pthread_mutex_t qsMutex, stopMutex, activeMutex, workMutex;
 pthread_mutex_t s1Mutex, s2Mutex, s3Mutex, s4Mutex;
-pthread_cond_t qsCond, stopCond;
+pthread_cond_t qsCond, stopCond, workCond;
 bool stop = false;
 short int activeThreads;
-long long d;
-Queue* work;
+long long d, currWorks;
+Node workq[QUEUE_LIMIT];
 
 long double s1 = 0.0L, s2 = 0.0L, s3 = 0.0L, s4 = 0.0L;
+
+MyTimer* enq = NULL, *s1t = NULL, *s2t = NULL, *s3t = NULL, *s4t = NULL, *total = NULL, *lhsM = NULL, *rhsM = NULL; 
 
 
 /*-----------------------------------------------------------------
@@ -105,58 +102,11 @@ void ihex(long double);
 
 /*-----------------------------------------------------------------*/
 /**
-   @brief  Init a New Queue.
-   @return Queue* Pointer to New Queue.
-*/
-/*-----------------------------------------------------------------*/
-Queue* initQueue();
-
-
-/*-----------------------------------------------------------------*/
-/**
-   @brief  Init a New Queue Node.
-   @param  int   Argument.
-   @return Node* Pointer to New Node.
-*/
-/*-----------------------------------------------------------------*/
-Node* initNode(long double (*func)(int, long long), 
-			   int, 
-			   long long);
-
-/*-----------------------------------------------------------------*/
-/**
    @brief  Free Memory Allocated to Node Struct
    @return Node* Pointer to Node;
 */
 /*-----------------------------------------------------------------*/
 void freeNode(Node*);
-
-
-/*-----------------------------------------------------------------*/
-/** (MUDAR)
-   @brief Add a New Node to Queue
-   @param Node*  Node to Be Added.
-*/
-/*-----------------------------------------------------------------*/
-void enqueue(Node*);
-
-
-/*-----------------------------------------------------------------*/
-/**
-   @brief  Remove a Node From Queue.
-   @return Node* Pointer to Dequeued Node.
-*/
-/*-----------------------------------------------------------------*/
-Node* dequeue();
-
-
-/*-----------------------------------------------------------------*/
-/**
-   @brief Print All Info About Queue.
-   @param Queue* Pointer to Queue.
-*/
-/*-----------------------------------------------------------------*/
-void printQueue();
 
 
 /*-----------------------------------------------------------------*/
@@ -175,95 +125,52 @@ void stopThreads();
 /*-----------------------------------------------------------------
                       Functions Implementation
   -----------------------------------------------------------------*/
-Queue* initQueue() {
-	
-	Queue* newQ = malloc(sizeof(Queue));
-	checkNullPointer((void*) newQ);
-	
-	newQ -> front = NULL;
-	newQ -> rear = NULL;
-	newQ -> totalNodes = 0;
 
-	return newQ;
-}
+void enqueue(long double (*func)(int, long long), 
+			 int arg1, 
+			 long long arg2) {
 
-Node* initNode(long double (*func)(int, long long), 
-			   int arg1, 
-			   long long arg2) {
-	
-	Node* newNode = malloc(sizeof(Node));
-	checkNullPointer((void*) newNode);
-    
-	newNode -> func = func;
-	newNode -> arg1 = arg1;
-	newNode -> arg2 = arg2;
-	newNode -> next = NULL;
-
-	return newNode;
-}
-
-void freeNode(Node* node) {
-
-	if (node)
-		free(node);
-}
-
-void enqueue(Node* newNode) {
+	Node* n;
 
 	pthread_mutex_lock(&qsMutex);
-	// If Queue is empty
-	if (!work -> rear) {
-	    work -> front = newNode;
-		work -> rear = newNode;
-		
-	// If Queue already has elements
-	} else {
-		work -> rear -> next = newNode;
-		work -> rear = newNode;
+#ifdef DEBUG
+	INIT_TIMER(enq);
+#endif
+
+    if (currWorks == QUEUE_LIMIT) {
+		puts("Work Queue at Max Capacity");
+		pthread_cond_wait(&workCond, &qsMutex);
 	}
 
-    work -> totalNodes++;
+	n = workq + currWorks;
+    n -> func = func;
+	n -> arg1 = arg1;
+	n -> arg2 = arg2;
+
+    currWorks++;
+
+#ifdef DEBUG
+	END_TIMER(enq);
+	CALC_FINAL_TIME(enq);
+#endif
+
 	pthread_cond_signal(&qsCond);
 	pthread_mutex_unlock(&qsMutex);
 }
 
 Node* dequeue() {
-
-	Node* temp = NULL;
 	
-	if (!work || !work -> totalNodes)
+	Node* n;
+	
+	if (!currWorks)
 		return NULL;
 
-	temp = work -> front;
-    work -> front = work -> front -> next;
-	work -> totalNodes--;
+	currWorks--;
+	n = workq + currWorks;
 
-	if (!work -> front)
-		work -> rear = NULL;
+	pthread_cond_signal(&workCond);
 
-	return temp;
-}
-
-
-void printQueue() {
-
-	unsigned int i = 0;
-	Node* aux;
-
-	if (!work)
-		return;
-
-	aux = work -> front;
-
-	while (aux) {
-		printf("=== Node %d ===\n", i++);
-	    
-		printf("Arg 1 = %d\n", aux -> arg1);
-	    printf("Arg 2 = %lld\n", aux -> arg2);
-
-		puts("");
-		aux = aux -> next;
-	}
+	return n;
 }
 
 
@@ -281,7 +188,7 @@ void checkArgs(int argc,
 		invalidArgumentError("Argumento Inválido!\nInicio >= 0");
 	}
 
-	if (activeThreads < 1 || activeThreads > 65536) {
+	if (activeThreads < 1 || activeThreads > THREAD_LIMIT) {
 		invalidArgumentError("Invalid Numvber of Threads!\n1 < Threads < 65536");
 	}
 }
@@ -289,37 +196,65 @@ void checkArgs(int argc,
 void executeWork(Node* n) {
     
 	long double sum, result;
+
 	result = n -> func(n -> arg1, n -> arg2);
 	if (result > EPSILON) {
 
 		switch (n -> arg1) {
 		    case 1:
 				pthread_mutex_lock(&s1Mutex);
+#ifdef DEBUG
+				INIT_TIMER(s1t);
+#endif
 				s1 += result;
 				s1 = fmodl(s1, 1.0L);
+#ifdef DEBUG
+			    END_TIMER(s1t);
+				CALC_FINAL_TIME(s1t);
+#endif
 				pthread_mutex_unlock(&s1Mutex);
 				break;
 		    case 4:
 				pthread_mutex_lock(&s2Mutex);
+#ifdef DEBUG
+				INIT_TIMER(s2t);
+#endif
 				s2 += result;
 				s2 = fmodl(s2, 1.0L);
+#ifdef DEBUG
+			    END_TIMER(s2t);
+				CALC_FINAL_TIME(s2t);
+#endif
 				pthread_mutex_unlock(&s2Mutex);
 				break;
 	        case 5:
 				pthread_mutex_lock(&s3Mutex);
+#ifdef DEBUG
+				INIT_TIMER(s3t);
+#endif
 				s3 += result;
 				s3 = fmodl(s3, 1.0L);
+#ifdef DEBUG
+			    END_TIMER(s3t);
+				CALC_FINAL_TIME(s3t);
+#endif
 				pthread_mutex_unlock(&s3Mutex);
 				break;
 	        default:
 				pthread_mutex_lock(&s4Mutex);
+#ifdef DEBUG
+			    INIT_TIMER(s4t);
+#endif
 				s4 += result;
 				s4 = fmodl(s4, 1.0L);
+#ifdef DEBUG
+			    END_TIMER(s4t);
+				CALC_FINAL_TIME(s4t);
+#endif
 				pthread_mutex_unlock(&s4Mutex);
 		}
 	}
 
-	freeNode(n);
 }
 
 void* thPool(void* arg) {
@@ -337,7 +272,7 @@ void* thPool(void* arg) {
 		pthread_mutex_lock(&stopMutex);
 
 		// Checks if stop codition is already set and there's no more work
-		if (stop && !work -> totalNodes) {
+		if (stop && !currWorks) {
 			pthread_mutex_unlock(&qsMutex);
 			pthread_mutex_unlock(&stopMutex);
 			break;
@@ -347,18 +282,18 @@ void* thPool(void* arg) {
 		pthread_mutex_unlock(&stopMutex);
 
 		// Checks if threre's work to be done, if not, waits signal
-	    if (!work -> totalNodes) 
+	    if (!currWorks) 
 			pthread_cond_wait(&qsCond, &qsMutex);
 		    
 		// Gets Work from queue
 		workNode = dequeue();
 
-		// Unlocks queue mutex
-		pthread_mutex_unlock(&qsMutex);
-	    
 		// Do the work
 		if (workNode)
 			executeWork(workNode);
+
+		// Unlocks queue mutex
+		pthread_mutex_unlock(&qsMutex);
 	}
 
 	// If thread finished execiution and there's no more work to be done
@@ -475,41 +410,40 @@ long double bbpAlgo() {
 
 	initThreads();
 
+#ifdef DEBUG
+	INIT_TIMER(lhsM);
+#endif
+
 	for (long long k = 0; k < d; k++) {
-		Node* s1, *s2, *s3, *s4;
-
-		s1 = initNode(lhs, 1, k);
-		enqueue(s1);
-		
-		s2 = initNode(lhs, 4, k);
-		enqueue(s2);
-
-		s3 = initNode(lhs, 5, k);
-		enqueue(s3);
-		
-		s4 = initNode(lhs, 6, k);
-		enqueue(s4);
+	    
+		enqueue(lhs, 1, k); 
+		enqueue(lhs, 4, k);
+	    enqueue(lhs, 5, k);
+	    enqueue(lhs, 6, k);
 	} 
 
+#ifdef DEBUG
+	END_TIMER(lhsM);
+	CALC_FINAL_TIME(lhsM);
+
+	INIT_TIMER(rhsM);
+#endif
+
 	for (long long k = d; k <= d + 100; k++) {
-		Node* s1, *s2, *s3, *s4;
-
-		s1 = initNode(rhs, 1, k);
-		enqueue(s1);
-		
-		s2 = initNode(rhs, 4, k);
-		enqueue(s2);
-
-		s3 = initNode(rhs, 5, k);
-		enqueue(s3);
-		
-		s4 = initNode(rhs, 6, k);
-		enqueue(s4);
+	    enqueue(rhs, 1, k); 
+		enqueue(rhs, 4, k);
+	    enqueue(rhs, 5, k);
+	    enqueue(rhs, 6, k);
 	}
+
+#ifdef DEBUG
+	END_TIMER(rhsM);
+	CALC_FINAL_TIME(rhsM);
+#endif
 
 	stopThreads();
 
-	printf("s1: %Lf\ns2: %Lf\ns3: %Lf\ns4: %Lf\n", s1, s2, s3, s4);
+	//printf("s1: %Lf\ns2: %Lf\ns3: %Lf\ns4: %Lf\n", s1, s2, s3, s4);
 
 	result = 4.0L *s1 - 2.0L * s2 - s3 - s4;
 	result = fmodl(result, 1.0L);
@@ -531,14 +465,35 @@ void ihex (long double x) {
 	}
 }
 
+void printTimers() {
+
+	printf("s1 Timer: %.5fs\n", s1t -> totalTime);
+	printf("s2 Timer: %.5fs\n", s2t -> totalTime);
+	printf("s3 Timer: %.5fs\n", s3t -> totalTime);
+	printf("s4 Timer: %.5fs\n", s4t -> totalTime);
+	printf("Lhs Malloc Time: %.5fs\n", lhsM -> totalTime);
+	printf("Rhs Malloc Time: %.5fs\n", rhsM -> totalTime);
+	printf("Enqueue Time: %.5fs\n", enq -> totalTime);
+	printf("Total Exec. Time: %.5fs\n", total -> totalTime);
+
+	free(enq);
+	free(total);
+	free(s1t);
+    free(s2t);
+	free(s3t);
+	free(s4t);
+	free(lhsM);
+	free(rhsM);
+}
+
 
 int main(int argc, char* argv[]) {
 
 	long double result;
 
-	work = initQueue();
-	//results = initQueue();
-
+#ifdef DEBUG
+	INIT_TIMER(total);
+#endif
 	checkArgs(argc, argv);
 
 	result = bbpAlgo(d);
@@ -546,7 +501,11 @@ int main(int argc, char* argv[]) {
 	ihex(result);
 	puts("");
 
-	//free(work);
+#ifdef DEBUG
+    END_TIMER(total);
+	CALC_FINAL_TIME(total);
+    printTimers();
+#endif
 
     return 0;
 }
