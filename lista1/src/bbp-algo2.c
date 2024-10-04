@@ -101,7 +101,6 @@ long double series(int j, long long n) {
 long double series1(long long n) {
 
 	long double temp, r, sum = 0.0L;
-	int multiplier = 4;
 
 	for (long long k = 0; k < n; k++) {
 
@@ -125,17 +124,20 @@ long double series1(long long n) {
 	return sum;
 }
 
-long double series2(int j, long long n, long double sum) {
+long double series2(int j, long long n) {
 
-	long double temp, r;
+	long double temp, r, sum = 0.0L;
+    long double multiplier = -1;
 
-	if (j == 4)
-		multiplier = 2;
+	if (j == 1)
+		multiplier = 4;
+	else if (j == 4)
+		multiplier = -2;
 
 	for (long long k = 0; k < n; k++) {
 		r = 8.0L*k + j;
 		temp = modPow(16, n - k, r);
-		sum = sum - (multiplier * temp) / r;
+		sum += (multiplier * temp) / r;
 		sum = fmodl(sum, 1.0L);
 	}
 
@@ -146,7 +148,7 @@ long double series2(int j, long long n, long double sum) {
 		if (temp < EPSILON)
 			break;
 
-	    sum -= multiplier * temp;
+	    sum += multiplier * temp;
 		sum = fmodl(sum, 1.0L);
 	}
 
@@ -155,7 +157,7 @@ long double series2(int j, long long n, long double sum) {
 
 long double bbpAlgo(long long d) {
 	
-	long double result;
+	long double result = 0.0L;
 #ifdef DEBUG
 	MyTimer* ts1 = NULL, *ts2 = NULL, *ts3 = NULL, *ts4 = NULL, *tresult = NULL;
 
@@ -163,8 +165,13 @@ long double bbpAlgo(long long d) {
 	INIT_TIMER(ts1);
 #endif
 
+	result += series2(4, d);
+	result = fmodl(result, 1.0L);
+
 	//s1 = series(1, d);
-    result = series1(d);
+    result += series2(1, d);
+	result = fmodl(result, 1.0L);
+	printf("(1) Parcial Result %Lf\n", result);
 
 #ifdef DEBUG
 	END_TIMER(ts1);
@@ -177,7 +184,7 @@ long double bbpAlgo(long long d) {
 #endif
 
 	//s2 = series(4, d);
-	result = series2(4, d, result);
+	
 
 #ifdef DEBUG
 	END_TIMER(ts2);
@@ -190,7 +197,8 @@ long double bbpAlgo(long long d) {
 #endif
 
 	//s3 = series(5, d);
-	result = series2(5, d, result);
+	result += series2(5, d);
+	result = fmodl(result, 1.0L);
 
 #ifdef DEBUG
 	END_TIMER(ts3);
@@ -203,7 +211,8 @@ long double bbpAlgo(long long d) {
 #endif
 
 	//s4 = series(6, d);
-	result = series2(6, d, result);
+	result += series2(6, d);
+	result = fmodl(result, 1.0L);
 
 #ifdef DEBUG
 	END_TIMER(ts4);
@@ -217,7 +226,7 @@ long double bbpAlgo(long long d) {
 
 	//result = 4.0L *s1 - 2.0L * s2 - s4 - s3;
 	//result = s1 - 2.0L * s2 - s3 - s4;
-	result = fmodl(result, 1.0L);
+	//result = fmodl(result, 1.0L);
 
 #ifdef DEBUG
 	END_TIMER(tresult);

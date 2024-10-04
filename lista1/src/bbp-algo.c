@@ -156,7 +156,7 @@ long double bbpAlgo(long long d) {
 	INIT_TIMER(tresult);
 #endif	
 
-	result = 4.0L *s1 - 2.0L * s2 - s3 - s4;
+	result = 4.0L *s1 - 2.0L * s2 - s4 - s3;
 	result = fmodl(result, 1.0L);
 
 #ifdef DEBUG
