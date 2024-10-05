@@ -10,6 +10,7 @@
 /*-----------------------------------------------------------------
                               Includes
   -----------------------------------------------------------------*/
+#include <gmp.h>
 #include <math.h>
 #include <pthread.h>
 #include <semaphore.h>
@@ -26,7 +27,7 @@
                             Definitions  -----------------------------------------------------------------*/
 #define PRECISION 10
 #define EPSILON 1e-17
-#define TOTAL_ACC 1000
+#define TOTAL_ACC 10000
 #define DEBUG
 
 /*-----------------------------------------------------------------
@@ -53,13 +54,13 @@ bool stop = false;
 short int activeThreads;
 long long d;
 Queue* work;
-long long batchSize = 100000;
+long long batchSize = 10000;
 
 long double acc[TOTAL_ACC] = {0};
 pthread_mutex_t accMutex[TOTAL_ACC];
 int counter = 0;
 
-MyTimer* enq = NULL, *total = NULL, *lhsM = NULL, *rhsM = NULL; 
+MyTimer* total = NULL; 
 
 /*-----------------------------------------------------------------
                    Internal Functions Signatures
@@ -213,9 +214,6 @@ void freeNode(Node* node) {
 void enqueue(Node* newNode) {
 
 	pthread_mutex_lock(&qsMutex);
-#ifdef DEBUG
-	INIT_TIMER(enq);
-#endif
 	// If Queue is empty
 	if (!work -> rear) {
 	    work -> front = newNode;
@@ -229,11 +227,6 @@ void enqueue(Node* newNode) {
 
     work -> totalNodes++;
 	pthread_cond_signal(&qsCond);
-
-#ifdef DEBUG
-	END_TIMER(enq);
-	CALC_FINAL_TIME(enq);
-#endif
 	pthread_mutex_unlock(&qsMutex);
 }
 
@@ -426,21 +419,101 @@ void stopThreads() {
 
 long long modPow(long long n, long long exp, long long base) {
 
-	unsigned long long result = 1;
-	unsigned long long temp = n;
+	__uint128_t result = 1;
+    __uint128_t temp = n;
 
 	temp %= base;
 	
 	while (exp) {
 
-		if (exp % 2)
+		if (exp & 1)
 			result = (result * temp) % base;
 	
 		temp = (temp * temp) % base;
 		exp >>= 1;
 	}
 
-	return result;
+	return (long long) result;
+}
+
+long long expm (long long p, long long ak)
+
+/*  expm = 16^p mod ak.  This routine uses the left-to-right binary 
+    exponentiation scheme. */
+
+{
+  int i, j;
+  __uint128_t p1, pt, r;
+#define ntp 37
+  static __uint128_t tp[ntp];
+  static int tp1 = 0;
+
+/*  If this is the first call to expm, fill the power of two table tp. */
+
+  if (tp1 == 0) {
+    tp1 = 1;
+    tp[0] = 1;
+
+    for (i = 1; i < ntp; i++) tp[i] = 2 * tp[i-1];
+  }
+
+  if (ak == 1) return 0.;
+
+/*  Find the greatest power of two less than or equal to p. */
+
+  for (i = 0; i < ntp; i++) if (tp[i] > p) break;
+
+  pt = tp[i-1];
+  p1 = p;
+  r = 1;
+
+/*  Perform binary exponentiation algorithm modulo ak. */
+
+  for (j = 1; j <= i; j++){
+    if (p1 >= pt){
+      r = 16 * r;
+      r = r - (long long) (r / ak) * ak;
+      p1 = p1 - pt;
+    }
+    pt /= 2;
+    if (pt >= 1){
+      r = r * r;
+      r = r - (long long) (r / ak) * ak;
+    }
+  }
+
+  return r;
+}
+
+long long modPowGMP(long long p, long long ak) {
+    mpz_t base, exp, mod, result;
+    mpz_init(base);
+    mpz_init(exp);
+    mpz_init(mod);
+    mpz_init(result);
+
+    // Set base to 16
+    mpz_set_ui(base, 16);
+
+    // Set exponent to p (absolute value)
+    mpz_set_si(exp, p < 0 ? -p : p);
+
+    // Set modulus to ak
+    mpz_set_si(mod, ak);
+
+    // Compute (16^p) mod ak
+    mpz_powm(result, base, exp, mod);
+
+    // Convert result to unsigned long long
+    long long ret = mpz_get_ui(result);
+
+    // Clear GMP variables
+    mpz_clear(base);
+    mpz_clear(exp);
+    mpz_clear(mod);
+    mpz_clear(result);
+
+    return ret;
 }
 
 long double lhs(int j, long long s) {
@@ -459,7 +532,9 @@ long double lhs(int j, long long s) {
 	for (long long k = s; k < loopLimit; k++) {
 		r = 8.0L*k +j;
 		temp = modPow(16, d - k, r);
-	    sum += (mult * temp) / r;
+	    //temp = expm((long double) d - k, r);
+		//temp = modPowGMP(d - k, r);
+		sum += (mult * temp) / r;
 	    sum = fmodl(sum, 1.0L);
 	}
 
@@ -504,19 +579,16 @@ void* produceNodes(void* arg) {
 		temp = k;
 		k += batchSize;
 		pthread_mutex_unlock(&prodMutex);
-			
+		    
 		Node* s1, *s2, *s3, *s4;
 
 		s1 = initNode(1, temp);	
-		enqueue(s1);
-
 		s2 = initNode(4, temp);
+	    s3 = initNode(5, temp);
+	    s4 = initNode(6, temp);
+		enqueue(s1);
 		enqueue(s2);
-		
-		s3 = initNode(5, temp);
 		enqueue(s3);
-
-		s4 = initNode(6, temp);
 		enqueue(s4);
 	} 
 
@@ -528,12 +600,9 @@ long double bbpAlgo() {
 	long double result = 0;
 	pthread_t producers[activeThreads];
 
-#ifdef DEBUG
-	INIT_TIMER(lhsM);
-#endif
-
 	pthread_mutex_init(&prodMutex, NULL);
 
+	// Produce Nodes
     for (int i = 0; i < activeThreads; i++) {
 		if (pthread_create(producers + i, NULL, &produceNodes, NULL) != 0) {
 			unexpectedError("Error Creating Threads!");
@@ -548,21 +617,11 @@ long double bbpAlgo() {
 
 	initThreads();
 
-	//produceNodes(NULL);
-
-#ifdef DEBUG
-	END_TIMER(lhsM);
-	CALC_FINAL_TIME(lhsM);
-#endif
 
     stopThreads();
 
 	for (int i = 0; i < TOTAL_ACC; i++)
 		result += acc[i];
-
-#ifdef DEBUG
-    INIT_TIMER(rhsM);
-#endif
 
 	result += rhs(1);
 	result = fmodl(result, 1.0L);
@@ -572,11 +631,6 @@ long double bbpAlgo() {
 	result = fmodl(result, 1.0L);
     result += rhs(6);
 	result = fmodl(result, 1.0L);
-
-#ifdef DEBUG
-	END_TIMER(rhsM);
-	CALC_FINAL_TIME(rhsM);
-#endif
 
 	//printf("s1: %Lf\ns2: %Lf\ns3: %Lf\ns4: %Lf\n", s1, s2, s3, s4);
 
@@ -602,17 +656,8 @@ void ihex (long double x) {
 
 void printTimers() {
 
-	if (d){
-		printf("Enqueue Time: %.5fs\n", enq -> totalTime);
-		free(enq);
-	}
-	printf("Lhs Malloc Time: %.5fs\n", lhsM -> totalTime);
-	printf("Rhs Malloc Time: %.5fs\n", rhsM -> totalTime);
 	printf("Total Exec. Time: %.5fs\n", total -> totalTime);
-
 	free(total);
-	free(lhsM);
-	free(rhsM);
 }
 
 
