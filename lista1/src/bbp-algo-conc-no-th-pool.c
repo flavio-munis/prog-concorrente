@@ -14,6 +14,7 @@
 #include <math.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -33,25 +34,19 @@
 /*-----------------------------------------------------------------
                               Structs
   -----------------------------------------------------------------*/
-typedef struct node {
-    int arg1;
-	long long arg2;
-	struct node* next;
-} Node;
 
-typedef struct queue {
-	Node* front;
-	Node* rear;
-	unsigned int totalNodes;
-} Queue;
+typedef struct {
+    uint64_t hi;
+    uint64_t lo;
+} uint128_t;
 
 
 /*-----------------------------------------------------------------
                           Global Variables -----------------------------------------------------------------*/
 pthread_mutex_t counterMutex, accIndexMutex;
-long long d;
+uint64_t d;
 short int activeThreads;
-long long batchSize = 100000;
+uint64_t batchSize = 100000;
 
 long double acc[TOTAL_ACC] = {0};
 pthread_mutex_t accMutex[TOTAL_ACC];
@@ -76,7 +71,7 @@ void checkArgs(int, char*[]);
 /*-----------------------------------------------------------------*/
 /**
    @brief  Execute BBP Algo Starting at d up to n Digits.
-   @param  long long   Starting Digit.
+   @param  uint64_t   Starting Digit.
    @return long double Fractional Part Containing The Result.
 */
 /*-----------------------------------------------------------------*/
@@ -86,13 +81,13 @@ long double bbpAlgo();
 /*-----------------------------------------------------------------*/
 /**
    @brief  Modular Exponentiation Algorithm (b^x mod n).
-   @param  long long Exponentiation base (b).
-   @param  long long Exponent (x).
-   @param  long long Modular Base (n).
-   @return long long Result of modular exp.
+   @param  uint64_t Exponentiation base (b).
+   @param  uint64_t Exponent (x).
+   @param  uint64_t Modular Base (n).
+   @return uint64_t Result of modular exp.
 */
 /*-----------------------------------------------------------------*/
-long long modPow(long long, long long, long long);
+uint64_t modPow(uint64_t, uint64_t, uint64_t);
 
 
 /*-----------------------------------------------------------------*/
@@ -106,31 +101,13 @@ void ihex(long double);
 
 /*-----------------------------------------------------------------*/
 /**
-   @brief  Init a New Queue.
-   @return Queue* Pointer to New Queue.
-*/
-/*-----------------------------------------------------------------*/
-Queue* initQueue();
-
-
-/*-----------------------------------------------------------------*/
-/**
-   @brief  Free Memory Allocated to Node Struct
-   @return Node* Pointer to Node;
-*/
-/*-----------------------------------------------------------------*/
-void freeNode(Node*);
-
-
-/*-----------------------------------------------------------------*/
-/**
    @brief Init All Threads, Mutexes and Conditions.
 */
 /*-----------------------------------------------------------------*/
 void initThreads();
 
 
-long double lhs(int, long long);
+long double lhs(int, uint64_t);
 
 
 /*-----------------------------------------------------------------
@@ -155,7 +132,43 @@ void checkArgs(int argc,
 	}
 }
 
-long long modPow(long long n, long long exp, long long base) {
+// 64-bit multiplication, result in 128 bits
+uint128_t mul64(uint64_t a, uint64_t b) {
+    uint128_t result;
+    result.lo = a * b;
+    result.hi = ((__uint128_t)a * b) >> 64;
+    return result;
+}
+
+// 128-bit by 64-bit division
+uint64_t div128_64(uint128_t a, uint64_t b) {
+    __uint128_t dividend = ((__uint128_t)a.hi << 64) | a.lo;
+    return dividend % b;
+}
+
+// Modular exponentiation function
+uint64_t powmod(uint64_t a,
+                uint64_t b,
+                uint64_t k) {
+    uint64_t s = 1;
+    uint128_t temp;
+
+    while (b > 0) {
+        if (b & 1) {
+            // s = (s * a) % k
+            temp = mul64(s, a);
+            s = div128_64(temp, k);
+        }
+        // a = (a * a) % k
+        temp = mul64(a, a);
+        a = div128_64(temp, k);
+        b >>= 1;
+    }
+
+    return s;
+}
+
+uint64_t modPow(uint64_t n, uint64_t exp, uint64_t base) {
 
 	__uint128_t result = 1;
     __uint128_t temp = n;
@@ -171,10 +184,10 @@ long long modPow(long long n, long long exp, long long base) {
 		exp >>= 1;
 	}
 
-	return (long long) result;
+	return (uint64_t) result;
 }
 
-long long modPowGMP(long long p, long long ak) {
+uint64_t modPowGMP(uint64_t p, uint64_t ak) {
     mpz_t base, exp, mod, result;
     mpz_init(base);
     mpz_init(exp);
@@ -193,8 +206,8 @@ long long modPowGMP(long long p, long long ak) {
     // Compute (16^p) mod ak
     mpz_powm(result, base, exp, mod);
 
-    // Convert result to unsigned long long
-    long long ret = mpz_get_ui(result);
+    // Convert result to unsigned uint64_t
+    uint64_t ret = mpz_get_ui(result);
 
     // Clear GMP variables
     mpz_clear(base);
@@ -205,32 +218,34 @@ long long modPowGMP(long long p, long long ak) {
     return ret;
 }
 
-long long expm (long long p, long long ak)
-
-/*  expm = 16^p mod ak.  This routine uses the left-to-right binary 
-    exponentiation scheme. */
-
-{
+uint64_t expm(uint64_t p, uint64_t ak) {
+  
   int i, j;
   __uint128_t p1, pt, r;
-#define ntp 37
+#define ntp 45
   static __uint128_t tp[ntp];
   static int tp1 = 0;
-
+  static int largest = 0;
+  
 /*  If this is the first call to expm, fill the power of two table tp. */
 
   if (tp1 == 0) {
     tp1 = 1;
     tp[0] = 1;
 
-    for (i = 1; i < ntp; i++) tp[i] = 2 * tp[i-1];
-  }
+    //for (i = 1; i < ntp; i++) tp[i] = 2 * tp[i-1];
+	while (tp[largest] < d) {
+
+		tp[largest + 1] = tp[largest] * 2;
+		largest++;
+	}
+  }        
 
   if (ak == 1) return 0.;
 
 /*  Find the greatest power of two less than or equal to p. */
 
-  for (i = 0; i < ntp; i++) if (tp[i] > p) break;
+  for (i = 0; i < largest; i++) if (tp[i] > p) break;
 
   pt = tp[i-1];
   p1 = p;
@@ -238,26 +253,81 @@ long long expm (long long p, long long ak)
 
 /*  Perform binary exponentiation algorithm modulo ak. */
 
-  for (j = 1; j <= i; j++){
-    if (p1 >= pt){
-      r = 16 * r;
-      r = r - (long long) (r / ak) * ak;
-      p1 = p1 - pt;
-    }
-    pt /= 2;
-    if (pt >= 1){
-      r = r * r;
-      r = r - (long long) (r / ak) * ak;
-    }
+  for (j = 1; j <= i; j++) {
+
+	  unsigned int temp;
+	
+	  if (p1 >= pt){
+		  r = 16 * r;
+		  temp = (r / ak);
+		  /* if (temp >= 4200000) */
+		  /* 	printf("Temp %lld\n", temp);		   */
+		  r = r - temp * ak;
+		  p1 = p1 - pt;
+	  }
+          
+	  pt /= 2;
+
+	  if (pt >= 1){
+		  r = r * r;
+		  temp = (r / ak);
+		  /* if (temp >= 4200000) */
+		  /* 	printf("Temp %lld\n", temp); */
+
+		  r = r - temp * ak;
+	  }
   }
 
   return r;
 }
 
-long double lhs(int j, long long s) {
+uint64_t barretReduction(uint64_t n,
+                         uint64_t base,
+                         uint64_t factor) {
+
+	uint64_t q = ((__uint128_t)n * factor) >> 64;
+	q = n - q * base;
+        
+	if (q >= base)
+		q -= base;
+
+	return q;
+}
+
+uint64_t mod_mul(uint64_t a,
+                 uint64_t b,
+                 uint64_t mod,
+                 uint64_t factor) {
+	__uint128_t product = (__uint128_t)a * b;
+	return barretReduction(product, mod, factor);
+}
+
+uint64_t modPowBarret(uint64_t n,
+					  uint64_t exp,
+					  uint64_t base) {
+
+	uint64_t result = 1;
+    uint64_t factor = UINT64_MAX / base;
+	
+	while (exp) {
+
+		if (exp & 1) {
+		    result = mod_mul(result, n, base, factor);
+		}
+
+		n = mod_mul(n, n, base, factor);
+                
+		exp >>= 1;
+	}
+
+	return result;
+}        
+
+
+long double lhs(int j, uint64_t s) {
 
 	long double r, sum = 0.0L, mult = -1, temp;
-	long long loopLimit = s + batchSize;
+	uint64_t loopLimit = s + batchSize;
 
 	if (j == 1)
 		mult = 4;
@@ -267,10 +337,12 @@ long double lhs(int j, long long s) {
 	if (loopLimit > d)
 		loopLimit = batchSize;
 
-	for (long long k = s; k < loopLimit; k++) {
-		r = 8.0L*k +j;
+	for (uint64_t k = s; k < loopLimit; k++) {
+		r = 8.0L * k + j;
+		//temp = modPowBarret(16, d - k, r);
+		temp = powmod(16, d - k, r);
 		//temp = modPow(16, d - k, r);
-	    temp = expm(d - k, r);
+	    //temp = expm(d - k, r);
 		//temp = modPowGMP(d - k, r);
 		sum += (mult * temp) / r;
 	    sum = fmodl(sum, 1.0L);
@@ -289,7 +361,7 @@ long double rhs(int j) {
 	else if (j == 4)
 		mult = -2.0L;
 
-	for (long long k = d; k <= d + 100; k++) {
+	for (uint64_t k = d; k <= d + 100; k++) {
 		r = 8.0L*k + j;
 		temp = powl(16.0L, (long double) d - k) / r;
 		
@@ -305,12 +377,13 @@ long double rhs(int j) {
 
 void* thPool(void* arg) {
 
-	static long long count = 0;
+    static uint64_t count = 0;
+    //static int j = 1;
   
 	while (true) {
-		long long localCount;
+		uint64_t localCount;
 		int localIndex;
-                
+      
 		pthread_mutex_lock(&counterMutex);
 		if (count >= d) {
 			pthread_mutex_unlock(&counterMutex);
@@ -319,10 +392,11 @@ void* thPool(void* arg) {
 
 		localCount = count;
 		count += batchSize;
+                
 		pthread_mutex_unlock(&counterMutex);
 
 		pthread_mutex_lock(&accIndexMutex);
-	    localIndex = accIndex;
+		localIndex = accIndex;
 		accIndex = (accIndex + 1) % TOTAL_ACC;
 		pthread_mutex_unlock(&accIndexMutex);
                 
@@ -330,10 +404,10 @@ void* thPool(void* arg) {
 		acc[localIndex] += lhs(1, localCount);
 		acc[localIndex] += lhs(4, localCount);
 		acc[localIndex] += lhs(5, localCount);
-		acc[localIndex] += lhs(6, localCount);
+		acc[localIndex] += lhs(6, localCount);		
 		pthread_mutex_unlock(accMutex + localIndex);
 	}
-
+	
 	return NULL;
 }
 
@@ -430,10 +504,10 @@ int main(int argc, char* argv[]) {
 		batchSize = d;
 
 	result = bbpAlgo(d);
-	printf("%d digits @ %lld = ", PRECISION, d);
+	printf("%d digits @ %ld = ", PRECISION, d);
 	ihex(result);
 	puts("");
-
+        
 #ifdef DEBUG
     END_TIMER(total);
 	CALC_FINAL_TIME(total);
