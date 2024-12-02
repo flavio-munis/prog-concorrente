@@ -1,0 +1,38 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-pedantic",
+      "-I",
+      "./include",
+      "-g",
+      "-O2",
+      "-o",
+      "bbp-conc",
+      "src/bbp-conc.c"
+    ],
+    "directory": "/home/flavi/Nova Pasta 2/UFRJ/6° Período/Prog Concorrente/labs/Trabalho Final",
+    "file": "/home/flavi/Nova Pasta 2/UFRJ/6° Período/Prog Concorrente/labs/Trabalho Final/src/bbp-conc.c",
+    "output": "/home/flavi/Nova Pasta 2/UFRJ/6° Período/Prog Concorrente/labs/Trabalho Final/bbp-conc"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-pedantic",
+      "-I",
+      "./include",
+      "-g",
+      "-O2",
+      "-o",
+      "bbp-seq",
+      "src/bbp-seq.c"
+    ],
+    "directory": "/home/flavi/Nova Pasta 2/UFRJ/6° Período/Prog Concorrente/labs/Trabalho Final",
+    "file": "/home/flavi/Nova Pasta 2/UFRJ/6° Período/Prog Concorrente/labs/Trabalho Final/src/bbp-seq.c",
+    "output": "/home/flavi/Nova Pasta 2/UFRJ/6° Período/Prog Concorrente/labs/Trabalho Final/bbp-seq"
+  }
+]

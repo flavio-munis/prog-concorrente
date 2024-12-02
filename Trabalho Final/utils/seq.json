@@ -1,0 +1,22 @@
+[
+    {
+        "median": 4e-05,
+        "offset": 1
+    },
+    {
+        "median": 7e-05,
+        "offset": 10
+    },
+    {
+        "median": 0.005583,
+        "offset": 10000
+    },
+    {
+        "median": 0.600353,
+        "offset": 1000000
+    },
+    {
+        "median": 6.29224,
+        "offset": 10000000
+    }
+]

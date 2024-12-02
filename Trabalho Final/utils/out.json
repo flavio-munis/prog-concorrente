@@ -1,0 +1,1386 @@
+{
+    "bellard": [
+        {
+            "median": 0.000293,
+            "offset": 1,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000227,
+            "offset": 1,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000387,
+            "offset": 1,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00078,
+            "offset": 1,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000823,
+            "offset": 1,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000293,
+            "offset": 10,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00029,
+            "offset": 10,
+            "threads": 1,
+            "batch_size": 10
+        },
+        {
+            "median": 0.000423,
+            "offset": 10,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00032,
+            "offset": 10,
+            "threads": 2,
+            "batch_size": 10
+        },
+        {
+            "median": 0.000397,
+            "offset": 10,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00032,
+            "offset": 10,
+            "threads": 4,
+            "batch_size": 10
+        },
+        {
+            "median": 0.00063,
+            "offset": 10,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000747,
+            "offset": 10,
+            "threads": 8,
+            "batch_size": 10
+        },
+        {
+            "median": 0.000797,
+            "offset": 10,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000627,
+            "offset": 10,
+            "threads": 12,
+            "batch_size": 10
+        },
+        {
+            "median": 0.00531,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00511,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 10
+        },
+        {
+            "median": 0.005413,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 100
+        },
+        {
+            "median": 0.004517,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.00464,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.003913,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 0.003117,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 10
+        },
+        {
+            "median": 0.00311,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 100
+        },
+        {
+            "median": 0.002807,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.00605,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.00367,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.001463,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 10
+        },
+        {
+            "median": 0.00131,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 100
+        },
+        {
+            "median": 0.002137,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.002277,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.00324,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.001,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 10
+        },
+        {
+            "median": 0.000827,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 100
+        },
+        {
+            "median": 0.001537,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.002507,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.002827,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000723,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 10
+        },
+        {
+            "median": 0.000667,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 100
+        },
+        {
+            "median": 0.000873,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.002413,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.292513,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 0.276247,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 10
+        },
+        {
+            "median": 0.276753,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 100
+        },
+        {
+            "median": 0.285243,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.290177,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.276333,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.291327,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 1000000
+        },
+        {
+            "median": 0.23697,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 0.15258,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 10
+        },
+        {
+            "median": 0.153743,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 100
+        },
+        {
+            "median": 0.150157,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.139527,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.150937,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.27912,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 1000000
+        },
+        {
+            "median": 0.219687,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.074517,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 10
+        },
+        {
+            "median": 0.07397,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 100
+        },
+        {
+            "median": 0.07712,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.074883,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.0841,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.281843,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 1000000
+        },
+        {
+            "median": 0.22524,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.04607,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 10
+        },
+        {
+            "median": 0.04279,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 100
+        },
+        {
+            "median": 0.04337,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.04675,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.080947,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.279007,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 1000000
+        },
+        {
+            "median": 0.22256,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.046537,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 10
+        },
+        {
+            "median": 0.036737,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 100
+        },
+        {
+            "median": 0.03659,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.04004,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.08402,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.267213,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 1000000
+        },
+        {
+            "median": 3.163417,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 2.911677,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 10
+        },
+        {
+            "median": 2.92633,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 100
+        },
+        {
+            "median": 2.97294,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 1000
+        },
+        {
+            "median": 2.989777,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 10000
+        },
+        {
+            "median": 2.986873,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 100000
+        },
+        {
+            "median": 2.981987,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 1000000
+        },
+        {
+            "median": 2.98378,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 10000000
+        },
+        {
+            "median": 1.99296,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 1.48748,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 10
+        },
+        {
+            "median": 1.471507,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 100
+        },
+        {
+            "median": 1.491387,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 1000
+        },
+        {
+            "median": 1.514093,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 10000
+        },
+        {
+            "median": 1.506667,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 100000
+        },
+        {
+            "median": 1.514777,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 1000000
+        },
+        {
+            "median": 2.986317,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 10000000
+        },
+        {
+            "median": 1.641107,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.74405,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 10
+        },
+        {
+            "median": 0.754357,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 100
+        },
+        {
+            "median": 0.762787,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.770807,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.780967,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.808313,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 1000000
+        },
+        {
+            "median": 2.982293,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 10000000
+        },
+        {
+            "median": 2.096687,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.516247,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 10
+        },
+        {
+            "median": 0.487227,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 100
+        },
+        {
+            "median": 0.4926,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.495823,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.51766,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.812127,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 1000000
+        },
+        {
+            "median": 2.983473,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 10000000
+        },
+        {
+            "median": 2.109727,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.514167,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 10
+        },
+        {
+            "median": 0.408797,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 100
+        },
+        {
+            "median": 0.406323,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.40861,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.445493,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.81278,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 1000000
+        },
+        {
+            "median": 2.981093,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 10000000
+        }
+    ],
+    "original": [
+        {
+            "median": 0.000227,
+            "offset": 1,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000397,
+            "offset": 1,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000427,
+            "offset": 1,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000587,
+            "offset": 1,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000693,
+            "offset": 1,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00036,
+            "offset": 10,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000257,
+            "offset": 10,
+            "threads": 1,
+            "batch_size": 10
+        },
+        {
+            "median": 0.000423,
+            "offset": 10,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000253,
+            "offset": 10,
+            "threads": 2,
+            "batch_size": 10
+        },
+        {
+            "median": 0.00061,
+            "offset": 10,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000397,
+            "offset": 10,
+            "threads": 4,
+            "batch_size": 10
+        },
+        {
+            "median": 0.00063,
+            "offset": 10,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000437,
+            "offset": 10,
+            "threads": 8,
+            "batch_size": 10
+        },
+        {
+            "median": 0.00075,
+            "offset": 10,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.000707,
+            "offset": 10,
+            "threads": 12,
+            "batch_size": 10
+        },
+        {
+            "median": 0.009673,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00887,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 10
+        },
+        {
+            "median": 0.00784,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 100
+        },
+        {
+            "median": 0.006737,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.006247,
+            "offset": 10000,
+            "threads": 1,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.007323,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00328,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 10
+        },
+        {
+            "median": 0.004057,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 100
+        },
+        {
+            "median": 0.00392,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.008213,
+            "offset": 10000,
+            "threads": 2,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.007987,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00254,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 10
+        },
+        {
+            "median": 0.001767,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 100
+        },
+        {
+            "median": 0.0023,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.006133,
+            "offset": 10000,
+            "threads": 4,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.006113,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.001203,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 10
+        },
+        {
+            "median": 0.000937,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 100
+        },
+        {
+            "median": 0.001217,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.00573,
+            "offset": 10000,
+            "threads": 8,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.005787,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.00096,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 10
+        },
+        {
+            "median": 0.000723,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 100
+        },
+        {
+            "median": 0.00102,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.003717,
+            "offset": 10000,
+            "threads": 12,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.559283,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 0.38919,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 10
+        },
+        {
+            "median": 0.37119,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 100
+        },
+        {
+            "median": 0.37221,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.372487,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.382477,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.37198,
+            "offset": 1000000,
+            "threads": 1,
+            "batch_size": 1000000
+        },
+        {
+            "median": 0.499963,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 0.217113,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 10
+        },
+        {
+            "median": 0.192757,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 100
+        },
+        {
+            "median": 0.191857,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.20398,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.199857,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.361063,
+            "offset": 1000000,
+            "threads": 2,
+            "batch_size": 1000000
+        },
+        {
+            "median": 0.520437,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 0.109953,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 10
+        },
+        {
+            "median": 0.097793,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 100
+        },
+        {
+            "median": 0.095843,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.102277,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.115337,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.382567,
+            "offset": 1000000,
+            "threads": 4,
+            "batch_size": 1000000
+        },
+        {
+            "median": 0.535723,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.066267,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 10
+        },
+        {
+            "median": 0.058333,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 100
+        },
+        {
+            "median": 0.058347,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.06132,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.075157,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.381897,
+            "offset": 1000000,
+            "threads": 8,
+            "batch_size": 1000000
+        },
+        {
+            "median": 0.546593,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.06179,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 10
+        },
+        {
+            "median": 0.048973,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 100
+        },
+        {
+            "median": 0.049017,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.04964,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.069947,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.385217,
+            "offset": 1000000,
+            "threads": 12,
+            "batch_size": 1000000
+        },
+        {
+            "median": 5.767047,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 1
+        },
+        {
+            "median": 4.140097,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 10
+        },
+        {
+            "median": 3.954867,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 100
+        },
+        {
+            "median": 3.990577,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 1000
+        },
+        {
+            "median": 3.98235,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 10000
+        },
+        {
+            "median": 4.000563,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 100000
+        },
+        {
+            "median": 3.99947,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 1000000
+        },
+        {
+            "median": 3.99556,
+            "offset": 10000000,
+            "threads": 1,
+            "batch_size": 10000000
+        },
+        {
+            "median": 3.63458,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 1
+        },
+        {
+            "median": 2.13781,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 10
+        },
+        {
+            "median": 1.99345,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 100
+        },
+        {
+            "median": 2.00411,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 1000
+        },
+        {
+            "median": 2.004677,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 10000
+        },
+        {
+            "median": 2.015143,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 100000
+        },
+        {
+            "median": 2.023897,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 1000000
+        },
+        {
+            "median": 3.98915,
+            "offset": 10000000,
+            "threads": 2,
+            "batch_size": 10000000
+        },
+        {
+            "median": 3.143347,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 1
+        },
+        {
+            "median": 1.09041,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 10
+        },
+        {
+            "median": 1.020443,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 100
+        },
+        {
+            "median": 1.021827,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 1000
+        },
+        {
+            "median": 1.028413,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 10000
+        },
+        {
+            "median": 1.03735,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 100000
+        },
+        {
+            "median": 1.206833,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 1000000
+        },
+        {
+            "median": 3.995313,
+            "offset": 10000000,
+            "threads": 4,
+            "batch_size": 10000000
+        },
+        {
+            "median": 4.052137,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 1
+        },
+        {
+            "median": 0.806353,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 10
+        },
+        {
+            "median": 0.658583,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 100
+        },
+        {
+            "median": 0.656697,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.65662,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.670217,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.856853,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 1000000
+        },
+        {
+            "median": 4.00133,
+            "offset": 10000000,
+            "threads": 8,
+            "batch_size": 10000000
+        },
+        {
+            "median": 4.07663,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 1
+        },
+        {
+            "median": 0.719817,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 10
+        },
+        {
+            "median": 0.5473,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 100
+        },
+        {
+            "median": 0.542547,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 1000
+        },
+        {
+            "median": 0.54353,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 10000
+        },
+        {
+            "median": 0.561253,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 100000
+        },
+        {
+            "median": 0.631157,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 1000000
+        },
+        {
+            "median": 3.997697,
+            "offset": 10000000,
+            "threads": 12,
+            "batch_size": 10000000
+        }
+    ]
+}
